@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Mazes</title>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" href="css/mazes.css">
+</head>
+<body>
+<h1>Mazes</h1>
+<div id="maze-nav">
+	<h2 id="act-type">Build</h2>
+	<div id="grid-dim">
+		<form>
+			<fieldset>
+			<legend>Grid Size:</legend>
+			<input id="grlarge" type="radio" name="gridsize" value="large" />
+			<label for="grlarge">12 x 16</label><br>
+			<input id="grsmall" type="radio" name="gridsize" value="small" />
+			<label for="grsmall">24 x 32</label>
+			</fieldset>			
+		</form>
+	</div>
+	
+	<div id="maze-board">
+	</div>
+	
+	<script src="js/mazes.js"></script>
+</body>
+</html>
