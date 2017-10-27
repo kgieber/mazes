@@ -86,12 +86,12 @@ h3 {color:#f76c6c;}
 	cursor:pointer;
 }
 
-#maze-board #end-btn {
+#maze-board .end-btn {
 	background-image:url(../images/end_arrow.png);
 	cursor:default;
 }
 
-#maze-board #start-btn {
+#maze-board .start-btn {
 	background-image:url(../images/start_arrow.png);
 	cursor:default;
 }
