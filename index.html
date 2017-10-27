@@ -7,24 +7,37 @@
 	<link rel="stylesheet" href="css/mazes.css">
 </head>
 <body>
-<h1>Mazes</h1>
-<div id="maze-nav">
-	<h2 id="act-type">Build</h2>
-	<div id="grid-dim">
-		<form>
-			<fieldset>
-			<legend>Grid Size:</legend>
-			<input id="grlarge" type="radio" name="gridsize" value="large" />
-			<label for="grlarge">12 x 16</label><br>
-			<input id="grsmall" type="radio" name="gridsize" value="small" />
-			<label for="grsmall">24 x 32</label>
-			</fieldset>			
-		</form>
-	</div>
+	<header>
+		<h1>Mazes</h1><h2 id="act-type">Build</h2>
+	</header>
+
+	<!-- div id="maze-nav">
 	
-	<div id="maze-board">
+		<div id="grid-dim">
+			<form>
+				<fieldset>
+				<legend>Grid Size:</legend>
+				<input id="grlarge" type="radio" name="gridsize" value="large" />
+				<label for="grlarge">12 x 16</label><br>
+				<input id="grsmall" type="radio" name="gridsize" value="small" />
+				<label for="grsmall">24 x 32</label>
+				</fieldset>			
+			</form>
+		</div>
+	</nav -->
+	<div id="maze-instr">
+		<p>Click on the grid block to place or remove a lego piece. You can also use the tab or arrow keys to move around the blocks in the grid. Arrows show where the ball will enter and leave the maze.</p>
 	</div>
-	
+	<div id="maze-holder">
+		<div id="frame-top"></div>
+		<div id="frame-center">
+			<div id="frame-left" class="fl-left"></div>
+			<div id="maze-board" class="fl-left">
+			</div>
+			<div id="frame-right" class="fl-left"></div>
+		</div>
+		<div id="frame-bottom"></div>
+	</div>
 	<script src="js/mazes.js"></script>
 </body>
 </html>
