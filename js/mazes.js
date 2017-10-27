@@ -140,10 +140,11 @@ function rebuildGrid() {
 		}
 		newdiv += '</div>';
 		$('#maze-board').append(newdiv);
-		// disable end and start buttons
-		$('.end-btn').prop("disabled", true);
-		$('.start-btn').prop("disabled", true);
 	}
+	
+	// disable end and start buttons
+	$('.end-btn').prop("disabled", true);
+	$('.start-btn').prop("disabled", true);
 	
 	// listeners for grid blocks
 	$('.game-block-'+type).click(function(ev) {

@@ -4,7 +4,7 @@ body {
 	margin:36px;
 }
 
-h1,h2,h3,button, div {margin:0;padding:0;}
+h1,h2,h3, button, div {margin:0;padding:0;}
 
 header, #maze-instr, #maze-nav {
 	width:800px;
@@ -79,10 +79,10 @@ h3 {color:#f76c6c;}
 }
 
 #maze-board button {
+	float:left;
 	border:none;
 	border-right:1pt rgba(0,0,255,0.1) solid;
-	border-bottom:1pt rgba(0,0,255,0.1) solid;
-	display:float;
+	border-bottom:1pt rgba(0,0,255,0.1) solid;	
 	cursor:pointer;
 }
 
