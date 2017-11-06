@@ -7,8 +7,13 @@
 	<link rel="stylesheet" href="css/mazes.css">
 </head>
 <body>
+	<div id="center-box">
 	<header>
-		<h1>Mazes</h1><h2 id="act-type">Build</h2>
+		<h1>Mazes</h1>
+		<div class="fl-right">
+			<h2 id="hdr-build">Build</h2>
+			<h2 id="hdr-play" class="hidden">Play</h2>
+		</div>
 	</header>
 
 	<!-- div id="maze-nav">
@@ -25,18 +30,26 @@
 			</form>
 		</div>
 	</nav -->
-	<div id="maze-instr">
-		<p>Click on the grid block to place or remove a lego piece. You can also use the tab or arrow keys to move around the blocks in the grid. Arrows show where the ball will enter and leave the maze.</p>
-	</div>
-	<div id="maze-holder">
-		<div id="frame-top"></div>
-		<div id="frame-center">
-			<div id="frame-left" class="fl-left"></div>
-			<div id="maze-board" class="fl-left">
+	<div id="maze-area">
+		<div id="maze-holder">
+			<div id="frame-top"></div>
+			<div id="frame-center">
+				<div id="frame-left" class="fl-left"></div>
+				<div id="maze-board" class="fl-left">
+				</div>
+				<div id="frame-right" class="fl-left"></div>
 			</div>
-			<div id="frame-right" class="fl-left"></div>
+			<div id="frame-bottom"></div>
 		</div>
-		<div id="frame-bottom"></div>
+		<div id="maze-sidebar">
+			<div id="maze-instr">
+				<p >Click on the grid block to place or remove a lego piece. You can also use the tab or arrow keys to move around the blocks in the grid. Arrows show where the ball will enter and leave the maze.</p>
+				<p>Click on the <strong>play</strong> button when you are ready to move the ball through the maze using the arrow keys.</p>
+			</div>
+			<button id="bt-play" class="h2-btn">Play</button>
+			<button id="bt-build" class="h2-btn">Build</button>
+		</div>
+	</div>	
 	</div>
 	<script src="js/mazes.js"></script>
 </body>

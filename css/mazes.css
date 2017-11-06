@@ -1,36 +1,44 @@
 body {
 	background-color:#003366;
 	font-family:Arial;
-	margin:36px;
 }
 
-h1,h2,h3, button, div {margin:0;padding:0;}
-
-header, #maze-instr, #maze-nav {
-	width:800px;
-}
+h1,h2,h3, button, div, p {margin:0;padding:0;}
 
 h1 {
 	color:#cccc99;
-	margin-bottom:12px;
 	float:left;
 }
 h2 {
 	color:#99cc99;
-	float:right;
 	padding-top:6px;
-	margin-bottom:12px;
+	float:right;
+	padding-left:12px;
 }		
+
 h3 {color:#f76c6c;}
 
 .fl-left {
 	float:left;
 }
 
-#maze-instr {
-	clear:both;
-	color:#ccc;
-	line-height:1.5em;
+.fl-right {
+	float:right;
+}
+
+.hidden {
+	display:none;
+}
+
+#center-box {
+	width:1024px;
+	margin:24px auto;
+}
+
+header { 
+	width:800px; 
+	margin-bottom:12px;
+	overflow:hidden;
 }
 
 #grid-dim {
@@ -39,10 +47,66 @@ h3 {color:#f76c6c;}
 	margin-bottom:12px;
 }
 
+#maze-area {
+	position:relative;
+}
+
 #maze-holder {
 	clear:both;
 	width:824px;
 	height:624px;
+}
+
+#maze-sidebar {
+	position:absolute;
+	width:180px;
+	top:100px;
+	right:0;
+	margin-left:20px;
+}
+
+#maze-instr {
+	color:#ccc;
+	line-height:1.5em;
+	margin-bottom:12px;
+}
+
+#maze-instr p {
+	margin-bottom:16px;
+}
+
+.h2-btn {
+	display:inline;
+	-moz-box-shadow:inset 0px 1px 3px 0px #9fb4f2;
+	-webkit-box-shadow:inset 0px 1px 3px 0px #9fb4f2;
+	box-shadow:inset 0px 1px 3px 0px #9fb4f2;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #7892c2), color-stop(1, #476e9e));
+	background:-moz-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-webkit-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-o-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-ms-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7892c2', endColorstr='#476e9e',GradientType=0);
+	background-color:#7892c2;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #4e6096;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:18px;
+	font-weight:bold;
+	padding:6px 12px;
+	text-decoration:none;
+	text-shadow:0px -1px 0px #283966;
+	margin-right:16px;
+	cursor:pointer;
+	
+}
+
+.h2-btn:disabled {
+	opacity:0.4;
+	cursor:default;
 }
 
 #frame-top {
@@ -110,6 +174,11 @@ h3 {color:#f76c6c;}
 
 .green-lego {
 	background-image:url(../images/green_lego.jpg);
+	background-size:cover;
+}
+
+.has-ball {
+	background-image:url(../images/green_ball.png);
 	background-size:cover;
 }
 
