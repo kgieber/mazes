@@ -6,12 +6,46 @@ var rows = 12,
 	pos_col= 0,
 	pos_row = 0,
 	ball_col = 0,
-	ball_row = 0;
-	
+	ball_row = 0,
+	has_won = false;
+
+// set up sounds
+//loadSounds();
+/**/
+var sfx_hit = new Howl({
+      src: ['audio/sfx_hit.mp3', 'audio/sfx_hit.ogg']
+    });
+var sfx_bonk = new Howl({
+      src: ['audio/sfx_hollowbonk.mp3', 'audio/sfx_hollowbonk.ogg']
+    });
+var sfx_win = new Howl({
+      src: ['audio/sfx_dings.mp3', 'audio/sfx_dings.ogg']
+    });
+var sfx_pop = new Howl({
+      src: ['audio/sfx_pop.mp3', 'audio/sfx_pop.ogg']
+    });
+var sfx_puff = new Howl({
+      src: ['audio/sfx_puff.mp3', 'audio/sfx_puff.ogg']
+    });
+var sfx_build = new Howl({
+      src: ['audio/sfx_build.mp3', 'audio/sfx_build.ogg']
+    });
+var sfx_click = new Howl({
+      src: ['audio/sfx_click.mp3', 'audio/sfx_click.ogg']
+    });
+    
+//var add = new Audio('audio_file.mp3');
+
 rebuildGrid();
 
 $('#hdr-play').removeClass('hidden');
 $('#hdr-play').hide();
+$('#bt-restart').removeClass('hidden');
+$('#bt-restart').hide();
+$('#maze-instr-play').removeClass('hidden');
+$('#maze-instr-play').hide();
+$('#maze-win').removeClass('hidden');
+$('#maze-win').hide();
 $('#bt-build').prop("disabled", true);
 
 // listeners for radio button control to switch the grid size
@@ -34,28 +68,35 @@ $('#grsmall').change(function() {
 
 // listeners for nav buttons
 $('#bt-play').click(function() {
-	var start_id = '#r' + rows.toString() + 'c1';
+	sfx_click.play();
+	maze_state = 'play';
 	$('#bt-play').prop("disabled", true);
 	$('#bt-build').prop("disabled", false);
+	$('#bt-restart').show();
 	$('#hdr-play').show();
 	$('#hdr-build').hide();
-	// set start points
-	$(start_id).removeClass('start-btn');
-	$(start_id).addClass('has-ball');
-	$(start_id).attr('aria-label', ($(start_id).attr('name') + 'ball'));
-	maze_state = 'play';
-	ball_col = 1;
-	ball_row = rows;
+	$('#maze-instr-build').hide();
+	$('#maze-instr-play').show();
+	restartPlay();
 });
 $('#bt-build').click(function() {
+	sfx_click.play();
 	$('#bt-play').prop("disabled", false);
 	$('#bt-build').prop("disabled", true);
+	$('#bt-restart').hide();
 	$('#hdr-play').hide();
 	$('#hdr-build').show();
+	$('#maze-instr-build').show();
+	$('#maze-instr-play').hide();
+	$('#maze-win').hide();
 	maze_state = 'build';
 	clearBall();
 	$('#r' + rows.toString() + 'c1').addClass('start-btn');
 	$('#r' + rows.toString() + 'c1').attr('aria-label', ($('#r' + rows.toString() + 'c1').attr('name') + 'start point'));
+});
+$('#bt-restart').click(function() {
+	sfx_click.play();
+	restartPlay();
 });
 
 // listener for keypresses
@@ -141,7 +182,7 @@ $(document).keydown(function(ev) {
 				pos_col = 1;
 			}
 			// don't move if at start point
-			if((pos_row === rows) && (pos_cols === 1)) {
+			if((pos_row === rows) && (pos_col === 1)) {
 				pos_row = rows - 1;
 			}
 			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
@@ -161,10 +202,12 @@ function swapBlocks(block) {
 	if(block.hasClass('green-lego')) {
 		block.removeClass('green-lego');
 		block.attr('aria-label', (block.attr('name') + 'empty'));
+		sfx_pop.play();
 	}
 	else {
 		block.addClass('green-lego');
 		block.attr('aria-label', (block.attr('name') + 'lego'));
+		sfx_build.play();
 	}		
 };
 
@@ -249,22 +292,57 @@ function attemptMove(clsp, rwsp) {
 console.log('row['+rwsp+'] col['+clsp+']');
 	var no_move = false,
 		chk_id = '#r' + rwsp.toString() + 'c' + clsp.toString();
+	// check if game is already won
+	if(has_won) {
+		// don't move anymore
+		return;
+	}
+	// check for winning
+	if((clsp === cols) && (rwsp === 1)) {
+console.log('YEAH! I won!!!!');	
+		clearBall();
+		$('#maze-win').show();
+		sfx_win.play();
+		has_won = true;
+		return;
+	}	
 	if(rwsp < 1 || clsp < 1 || rwsp > rows || clsp > cols) {
 		no_move = true;
+		sfx_bonk.play();
 	}
 	if($(chk_id).hasClass('green-lego')) {
 		no_move = true;
+		sfx_hit.play();
 	}
 	if(!no_move) {
+		sfx_puff.play();
 		clearBall();
 		$(chk_id).addClass('has-ball');
 		$(chk_id).attr('aria-label', ($(chk_id).attr('name') + 'ball'));
 		ball_row = rwsp;
 		ball_col = clsp;
 	}
-	
+	else {
+		console.log('>>>> CANT MOVE');
+	}
 }
 
-
+// used to restart the play round
+function restartPlay() {
+	has_won = false;
+	clearBall();
+	$('#maze-win').hide();
+	var start_id = '#r' + rows.toString() + 'c1';
+	// set start points
+	if($(start_id).hasClass('start-btn')) {
+		$(start_id).removeClass('start-btn');
+	}
+	if($(start_id).removeClass('has-ball')) {
+		$(start_id).addClass('has-ball');
+	}
+	$(start_id).attr('aria-label', ($(start_id).attr('name') + 'ball'));
+	ball_col = 1;
+	ball_row = rows;
+}
 
 
