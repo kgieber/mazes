@@ -10,8 +10,6 @@ var rows = 12,
 	has_won = false;
 
 // set up sounds
-//loadSounds();
-/**/
 var sfx_hit = new Howl({
       src: ['audio/sfx_hit.mp3', 'audio/sfx_hit.ogg']
     });
@@ -34,8 +32,6 @@ var sfx_click = new Howl({
       src: ['audio/sfx_click.mp3', 'audio/sfx_click.ogg']
     });
     
-//var add = new Audio('audio_file.mp3');
-
 rebuildGrid();
 
 $('#hdr-play').removeClass('hidden');
@@ -214,7 +210,8 @@ function swapBlocks(block) {
 // used to build the grid
 function rebuildGrid() {
 	var	i = 1,
-		j = 1;
+		j = 1,
+		ctr = 0;
 	$('#maze-board').html('');
 	for(; i <= rows; ++i) {
 		var newdiv = '<div>';
@@ -223,16 +220,17 @@ function rebuildGrid() {
 			var btn_name = 'row ' + i.toString() + ' column ' + j.toString() + ' ',
 				btn_id = 'r' + i.toString() + 'c' + j.toString(),
 				newbtn = '';
+			++ctr;
 			// check for exit point
 			if((i === 1) && (j === cols)) {
-				newbtn = '<button class="game-block-'+type+' end-btn" id="' + btn_id + '" aria-label="' + btn_name + 'end point" name="' + btn_name + '"/>';
+				newbtn = '<button class="game-block-'+type+' end-btn" id="' + btn_id + '" aria-label="' + btn_name + 'end point" name="' + btn_name + '" tabindex="' + (100 + ctr).toString() + '" />';
 			}
 			// check for entrance point
 			else if((j === 1) && (i === rows)) {
-				newbtn = '<button class="game-block-'+type+' start-btn" id="' + btn_id + '" aria-label="' + btn_name + 'start point" name="' + btn_name + '"/>';			
+				newbtn = '<button class="game-block-'+type+' start-btn" id="' + btn_id + '" aria-label="' + btn_name + 'start point" name="' + btn_name + '" tabindex="' + (100 + ctr).toString() + '" />';			
 			}
 			else {
-				newbtn = '<button class="game-block-'+type+'" id="' + btn_id + '" aria-label="' + btn_name + 'empty" name="' + btn_name + '"/>';
+				newbtn = '<button class="game-block-'+type+'" id="' + btn_id + '" aria-label="' + btn_name + 'empty" name="' + btn_name + '" tabindex="' + (100 + ctr).toString() + '" />';
 			}
 			newdiv += newbtn;
 		}
@@ -289,7 +287,6 @@ function clearBall() {
 
 // used to check if this is a spot that can have the ball
 function attemptMove(clsp, rwsp) {
-console.log('row['+rwsp+'] col['+clsp+']');
 	var no_move = false,
 		chk_id = '#r' + rwsp.toString() + 'c' + clsp.toString();
 	// check if game is already won
@@ -299,7 +296,6 @@ console.log('row['+rwsp+'] col['+clsp+']');
 	}
 	// check for winning
 	if((clsp === cols) && (rwsp === 1)) {
-console.log('YEAH! I won!!!!');	
 		clearBall();
 		$('#maze-win').show();
 		sfx_win.play();
