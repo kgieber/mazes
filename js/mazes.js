@@ -7,7 +7,12 @@ var rows = 12,
 	pos_row = 0,
 	ball_col = 0,
 	ball_row = 0,
-	has_won = false;
+	has_won = false,
+	timer_visible = false,
+	init_timer = false,
+	start_time = 0,
+	timer_running = false,
+	delay_timer;
 
 // set up sounds
 var sfx_hit = new Howl({
@@ -34,6 +39,12 @@ var sfx_click = new Howl({
     
 rebuildGrid();
 
+$('#maze-timer').removeClass('hidden');
+$('#maze-timer').hide();
+$('#bt-hdtimer').removeClass('hidden');
+$('#bt-hdtimer').hide();
+$('#bt-timer').removeClass('hidden');
+$('#bt-timer').hide();
 $('#hdr-play').removeClass('hidden');
 $('#hdr-play').hide();
 $('#bt-restart').removeClass('hidden');
@@ -73,6 +84,14 @@ $('#bt-play').click(function() {
 	$('#hdr-build').hide();
 	$('#maze-instr-build').hide();
 	$('#maze-instr-play').show();
+	// check status of timer
+	if(timer_visible) {
+		$('#maze-timer').show();
+		$('#bt-hdtimer').show();
+	}
+	else {
+		$('#bt-timer').show();	
+	}
 	restartPlay();
 });
 $('#bt-build').click(function() {
@@ -89,10 +108,38 @@ $('#bt-build').click(function() {
 	clearBall();
 	$('#r' + rows.toString() + 'c1').addClass('start-btn');
 	$('#r' + rows.toString() + 'c1').attr('aria-label', ($('#r' + rows.toString() + 'c1').attr('name') + 'start point'));
+	// hide timer
+	$('#maze-timer').hide();
+	$('#bt-timer').hide();
+	$('#bt-hdtimer').hide();
+	if(timer_running) {
+		clearInterval(delay_timer);
+		timer_running = false;
+	}
 });
 $('#bt-restart').click(function() {
 	sfx_click.play();
 	restartPlay();
+});
+$('#bt-timer').click(function() {
+	sfx_click.play();
+	$('#maze-timer').show();
+	$('#bt-timer').hide();
+	$('#bt-hdtimer').show();
+	timer_visible = true;
+	if(!timer_running) {
+		init_timer = true;
+		start_time = 0;
+		curr_time = 0;
+		$('#maze-time').html('00:00');
+	}
+});
+$('#bt-hdtimer').click(function() {
+	sfx_click.play();
+	$('#maze-timer').hide();
+	$('#bt-timer').show();
+	$('#bt-hdtimer').hide();
+	timer_visible = false;
 });
 
 // listener for keypresses
@@ -252,7 +299,7 @@ function rebuildGrid() {
 			swapBlocks($(this));
 		}
 		else {
-		
+			// do nothing	
 		}
 	});
 	$('.game-block-'+type).focus(function(ev) {
@@ -297,11 +344,24 @@ function attemptMove(clsp, rwsp) {
 	// check for winning
 	if((clsp === cols) && (rwsp === 1)) {
 		clearBall();
+		if(timer_running) {
+			clearInterval(delay_timer);
+			timer_running = false;
+		}
 		$('#maze-win').show();
 		sfx_win.play();
 		has_won = true;
 		return;
-	}	
+	}
+	// check whether to start timer	
+	if(init_timer) {
+		init_timer = false;
+		start_time = Date.now();
+		timer_running = true;
+		// start ongoing timer
+		delay_timer = window.setInterval(incrementTimer, 500);
+	}
+	// check for move
 	if(rwsp < 1 || clsp < 1 || rwsp > rows || clsp > cols) {
 		no_move = true;
 		sfx_bonk.play();
@@ -319,13 +379,52 @@ function attemptMove(clsp, rwsp) {
 		ball_col = clsp;
 	}
 	else {
-		console.log('>>>> CANT MOVE');
+//		console.log('>>>> CANT MOVE');
+	}
+}
+
+// used to increment the timer when the maze is being played
+function incrementTimer() {
+	var cr_time = Date.now(),
+		df_time = Math.floor((cr_time - start_time) / 1000),
+		tmin = Math.floor(df_time / 60),
+		tsec = df_time % 60,
+		time_str = '';
+	// check if time is longer than what will be displayed
+	if(df_time > 3599) {
+		$('#maze-time').html('59:59');
+	}
+	else {
+		if(tmin < 10) {
+			time_str += '0' + tmin.toString();		
+		}
+		else {
+			time_str += tmin.toString();		
+		}
+		time_str += ':';
+		if(tsec < 10) {
+			time_str += '0' + tsec.toString();		
+		}
+		else {
+			time_str += tsec.toString();		
+		}
+		$('#maze-time').html(time_str);
 	}
 }
 
 // used to restart the play round
 function restartPlay() {
 	has_won = false;
+	if(timer_visible) {
+		init_timer = true;
+		start_time = 0;
+		curr_time = 0;
+		$('#maze-time').html('00:00');
+	};
+	if(timer_running) {
+		clearInterval(delay_timer);
+		timer_running = false;
+	}
 	clearBall();
 	$('#maze-win').hide();
 	var start_id = '#r' + rows.toString() + 'c1';

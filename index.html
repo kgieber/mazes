@@ -11,6 +11,9 @@
 	<div id="center-box">
 	<header>
 		<h1>Mazes</h1>
+		<div id="maze-timer" class="hidden">
+			<p id="maze-time">00:00</p>
+		</div>
 		<div class="fl-right">
 			<h2 id="hdr-build">Build</h2>
 			<h2 id="hdr-play" class="hidden">Play</h2>
@@ -59,7 +62,9 @@
 			<div id="maze-controls">
 				<button id="bt-play" class="h2-btn" tabindex="10">Play</button>
 				<button id="bt-build" class="h2-btn" tabindex="15">Build</button>
-				<button id="bt-restart" class="hidden h2-btn" tabindex="20">Restart</button>
+				<button id="bt-restart" class="h2-btn hidden" tabindex="20">Restart</button>
+				<button id="bt-timer" class="h2-btn hidden" tabindex="25">Show Timer</button>
+				<button id="bt-hdtimer" class="h2-btn hidden" tabindex="30">Hide Timer</button>
 			</div>
 		</div>
 	</div>	

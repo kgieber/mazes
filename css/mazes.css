@@ -36,9 +36,27 @@ h3 {color:#f76c6c;}
 }
 
 header { 
+	position:relative;
 	width:800px; 
 	margin-bottom:12px;
 	overflow:hidden;
+}
+
+#maze-timer {
+	position:absolute;
+	left: 360px;
+	color:#ffffff;
+	width:80px;
+	height:32px;
+	border:2px solid #ffffff;
+	background-color:rgba(125, 125, 125, 0.2);
+}
+
+#maze-timer p {
+	font-size: 1.4em;
+	font-weight: bold;
+	text-align:center;
+	line-height:32px;
 }
 
 #grid-dim {
@@ -159,7 +177,7 @@ header {
 	top:1px;
 }
 
-#bt-restart {
+#bt-restart, #bt-timer, #bt-hdtimer {
 	margin-top:12px;
 }
 
