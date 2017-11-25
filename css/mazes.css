@@ -129,7 +129,7 @@ header {
 
 #maze-allowkeys {
 	position:absolute;
-	bottom:12px;
+	bottom:48px;
 	width:180px;
 	right:0;
 	color:#ccc;	
@@ -160,8 +160,7 @@ header {
 	text-decoration:none;
 	text-shadow:0px -1px 0px #283966;
 	margin-right:16px;
-	cursor:pointer;
-	
+	cursor:pointer;	
 }
 
 .h2-btn:disabled {
@@ -169,7 +168,7 @@ header {
 	cursor:default;
 }
 
-.h2-btn:hover {
+.h2-btn:hover, .h3-btn:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #476e9e), color-stop(1, #7892c2));
 	background:-moz-linear-gradient(top, #476e9e 5%, #7892c2 100%);
 	background:-webkit-linear-gradient(top, #476e9e 5%, #7892c2 100%);
@@ -178,6 +177,34 @@ header {
 	background:linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#476e9e', endColorstr='#7892c2',GradientType=0);
 	background-color:#476e9e;
+}
+
+.h3-btn {
+	display:inline;
+	-moz-box-shadow:inset 0px 1px 3px 0px #9fb4f2;
+	-webkit-box-shadow:inset 0px 1px 3px 0px #9fb4f2;
+	box-shadow:inset 0px 1px 3px 0px #9fb4f2;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #7892c2), color-stop(1, #476e9e));
+	background:-moz-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-webkit-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-o-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-ms-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7892c2', endColorstr='#476e9e',GradientType=0);
+	background-color:#7892c2;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	border:1px solid #4e6096;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+/*	font-weight:bold;	*/
+	padding:4px 8px;
+	text-decoration:none;
+	text-shadow:0px -1px 0px #283966;
+	margin-right:16px;
+	cursor:pointer;	
 }
 
 .myButton:active {
@@ -264,6 +291,38 @@ header {
 .has-ball {
 	background-image:url(../images/green_ball.png);
 	background-size:cover;
+}
+
+#maze-kbinfo {
+	position:relative;
+	margin-top:12px;
+	width: 812px;
+	height:36px;
+}
+
+#bt-shortcuts {
+	float:right;
+	margin-right:0;
+}
+
+#bt-close {
+	float:right;
+	margin-right:0;
+}
+
+#mzview-kbinfo {
+	background-color:rgba(255, 255, 255, 0.45);
+	margin-left:60px;
+	padding:4px 8px;
+	height: 1.75em;
+	border-radius:5px;
+}
+
+#mzview-kbinfo p {
+	float:left;
+	font-size:.9em;
+	line-height: 1.75em;
+	margin-left:12px;
 }
 
 /* adjusting the focus rect to make it more visible */

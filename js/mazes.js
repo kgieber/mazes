@@ -14,6 +14,7 @@ var rows = 12,
 	timer_running = false,
 	allow_repeat = false,
 	key_wait = false,
+	did_move = false,
 	delay_timer;
 
 // set up sounds
@@ -38,6 +39,11 @@ var sfx_build = new Howl({
 var sfx_click = new Howl({
       src: ['audio/sfx_click.mp3', 'audio/sfx_click.ogg']
     });
+var sfx_move = new Howl({
+      src: ['audio/sfx_click_light.mp3', 'audio/sfx_click_light.ogg']
+    });
+ 
+// screen setup *********************************************************************
     
 rebuildGrid();
 
@@ -55,9 +61,11 @@ $('#maze-instr-play').removeClass('hidden');
 $('#maze-instr-play').hide();
 $('#maze-win').removeClass('hidden');
 $('#maze-win').hide();
+$('#mzview-kbinfo').removeClass('hidden');
+$('#mzview-kbinfo').hide();
 $('#bt-build').prop("disabled", true);
 
-// listeners for check button control for key repeat
+// listeners for check button control for key repeat ********************************
 $('#repeat-box').prop("checked", true);
 allow_repeat = true;
 
@@ -70,13 +78,6 @@ $('#repeat-box').change(function() {
 		allow_repeat = false;	
 	}
 });	
-/*$('#grsmall').change(function() {
-	rows = 24,
-	cols =  32,
-	type = 'sm';
-	rebuildGrid();		
-});	
-*/
 
 // listeners for radio button control to switch the grid size
 /*
@@ -96,28 +97,222 @@ $('#grsmall').change(function() {
 });	
 */
 
-// listeners for nav buttons
+// listeners for nav buttons ********************************************************
+
 $('#bt-play').click(function() {
-	sfx_click.play();
-	maze_state = 'play';
-	$('#bt-play').prop("disabled", true);
-	$('#bt-build').prop("disabled", false);
-	$('#bt-restart').show();
-	$('#hdr-play').show();
-	$('#hdr-build').hide();
-	$('#maze-instr-build').hide();
-	$('#maze-instr-play').show();
-	// check status of timer
-	if(timer_visible) {
-		$('#maze-timer').show();
-		$('#bt-hdtimer').show();
-	}
-	else {
-		$('#bt-timer').show();	
-	}
-	restartPlay();
+	switchToPlay();
 });
 $('#bt-build').click(function() {
+	switchToBuild();
+});
+$('#bt-restart').click(function() {
+	restartCurrentPlay();
+});
+$('#bt-timer').click(function() {
+	showGameTimer();
+});
+$('#bt-hdtimer').click(function() {
+	hideGameTimer();
+});
+$('#bt-shortcuts').click(function() {
+	sfx_click.play();
+	$('#bt-shortcuts').hide();
+	$('#mzview-kbinfo').show();
+});
+$('#bt-close').click(function() {
+	sfx_click.play();
+	$('#bt-shortcuts').show();
+	$('#mzview-kbinfo').hide();
+});
+
+// listener for keypresses **********************************************************
+
+$(document).keydown(function(ev) {
+	if(!allow_repeat && key_wait) {return;}
+	did_move = true;
+	// check for the different directions
+	switch(ev.which) {
+	case 37:
+		// left
+		ev.preventDefault();
+		if(maze_state === 'build') {
+			--pos_col;
+			if(pos_col < 1) {
+				sfx_bonk.play();
+				pos_col = 1;
+				did_move = false;
+			}
+			// make sure rows is also ready
+			if(pos_row < 1) {
+				pos_row = 1;
+			}
+			// don't move if at start point
+			if((pos_row === rows) && (pos_col === 1)) {
+				pos_col = 2;
+				did_move = false;
+			}
+			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
+			if(did_move) {
+				sfx_move.play();			
+			}
+		}
+		else {
+			attemptMove(ball_col - 1, ball_row);
+		}
+		key_wait = true;
+		break;
+	case 38:
+		// top
+		ev.preventDefault();
+		if(maze_state === 'build') {
+			--pos_row;
+			if(pos_row < 1) {
+				sfx_bonk.play();
+				pos_row = 1;
+				did_move = false;
+			}
+			// make sure cols is also ready
+			if(pos_col < 1) {
+				pos_col = 1;
+			}
+			// don't move if at end point
+			if((pos_row === 1) && (pos_col === cols)) {
+				pos_row = 2;
+				did_move = false;
+			}
+			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
+			if(did_move) {
+				sfx_move.play();			
+			}
+		}
+		else {
+			attemptMove(ball_col, ball_row - 1);
+		}
+		key_wait = true;
+		break;
+	case 39:
+		// right
+		ev.preventDefault();
+		if(maze_state === 'build') {
+			++pos_col;
+			if(pos_col > cols) {
+				sfx_bonk.play();
+				pos_col = cols;
+				did_move = false;
+			}
+			// make sure rows is also ready
+			if(pos_row < 1) {
+				pos_row = 1;
+			}
+			// don't move if at end point
+			if((pos_row === 1) && (pos_col === cols)) {
+				pos_col = cols - 1;
+				did_move = false;
+			}
+			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
+			if(did_move) {
+				sfx_move.play();			
+			}
+		}
+		else {
+			attemptMove(ball_col + 1, ball_row);
+		}
+		key_wait = true;
+		break;
+	case 40:
+		// down
+		ev.preventDefault();
+		if(maze_state === 'build') {
+			++pos_row;
+			if(pos_row > rows) {
+				sfx_bonk.play();
+				pos_row = rows;
+				did_move = false;
+			}
+			// make sure cols is also ready
+			if(pos_col < 1) {
+				pos_col = 1;
+			}
+			// don't move if at start point
+			if((pos_row === rows) && (pos_col === 1)) {
+				pos_row = rows - 1;
+				did_move = false;
+			}
+			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
+			if(did_move) {
+				sfx_move.play();			
+			}
+		}
+		else {
+			attemptMove(ball_col, ball_row + 1);		
+		}
+		key_wait = true;
+		break;
+	// KEYSTROKE ACCESSIBILITY	
+	case 66:
+		if(maze_state === 'play') {
+			switchToBuild();
+		}
+		break;
+	case 80:
+		if(maze_state === 'build') {
+			switchToPlay();
+		}
+		break;
+	case 82:
+		if(maze_state === 'play') {
+			restartCurrentPlay();		
+		}
+		break;
+	case 75:
+		if(allow_repeat) {
+			allow_repeat = false;
+			$('#repeat-box').prop("checked", false);
+		}
+		else {
+			allow_repeat = true;	
+			key_wait = false;
+			$('#repeat-box').prop("checked", true);
+		}
+		break;
+	case 84:
+		if(maze_state === 'play') {
+			if(timer_visible) {
+				hideGameTimer();						
+			}
+			else {
+				showGameTimer();						
+			}
+		}
+		break;
+	case 83:
+		sfx_click.play();
+		if($('#mzview-kbinfo').is(':visible')) {
+			$('#mzview-kbinfo').hide();
+			$('#bt-shortcuts').show();
+		}
+		else {
+			$('#mzview-kbinfo').show();
+			$('#bt-shortcuts').hide();
+		}
+		break;
+	default:
+		// do nothing
+		break;	
+	}
+});
+
+// listener for keypresses
+$(document).keyup(function(ev) {
+	if(!allow_repeat && key_wait) {
+		key_wait = false;
+	}
+});
+
+// functions ************************************************************************
+
+// used to switch to build mode
+function switchToBuild() {
 	sfx_click.play();
 	$('#bt-play').prop("disabled", false);
 	$('#bt-build').prop("disabled", true);
@@ -139,12 +334,38 @@ $('#bt-build').click(function() {
 		clearInterval(delay_timer);
 		timer_running = false;
 	}
-});
-$('#bt-restart').click(function() {
+}
+
+// used to switch to play mode
+function switchToPlay() {
+	sfx_click.play();
+	maze_state = 'play';
+	$('#bt-play').prop("disabled", true);
+	$('#bt-build').prop("disabled", false);
+	$('#bt-restart').show();
+	$('#hdr-play').show();
+	$('#hdr-build').hide();
+	$('#maze-instr-build').hide();
+	$('#maze-instr-play').show();
+	// check status of timer
+	if(timer_visible) {
+		$('#maze-timer').show();
+		$('#bt-hdtimer').show();
+	}
+	else {
+		$('#bt-timer').show();	
+	}
+	restartPlay();
+}
+
+// used to restart play
+function restartCurrentPlay() {
 	sfx_click.play();
 	restartPlay();
-});
-$('#bt-timer').click(function() {
+}
+
+// used to show the timer
+function showGameTimer() {
 	sfx_click.play();
 	$('#maze-timer').show();
 	$('#bt-timer').hide();
@@ -156,124 +377,16 @@ $('#bt-timer').click(function() {
 		curr_time = 0;
 		$('#maze-time').html('00:00');
 	}
-});
-$('#bt-hdtimer').click(function() {
+}
+
+// used to hide the timer
+function hideGameTimer() {
 	sfx_click.play();
 	$('#maze-timer').hide();
 	$('#bt-timer').show();
 	$('#bt-hdtimer').hide();
 	timer_visible = false;
-});
-
-// listener for keypresses
-$(document).keydown(function(ev) {
-	if(!allow_repeat && key_wait) {return;}
-	// check for the different directions
-	switch(ev.which) {
-	case 37:
-		// left
-		ev.preventDefault();
-		if(maze_state === 'build') {
-			--pos_col;
-			if(pos_col < 1) {
-				pos_col = 1;
-			}
-			// make sure rows is also ready
-			if(pos_row < 1) {
-				pos_row = 1;
-			}
-			// don't move if at start point
-			if((pos_row === rows) && (pos_col === 1)) {
-				pos_col = 2;
-			}
-			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
-		}
-		else {
-			attemptMove(ball_col - 1, ball_row);
-		}
-		key_wait = true;
-		break;
-	case 38:
-		// top
-		ev.preventDefault();
-		if(maze_state === 'build') {
-			--pos_row;
-			if(pos_row < 1) {
-				pos_row = 1;
-			}
-			// make sure cols is also ready
-			if(pos_col < 1) {
-				pos_col = 1;
-			}
-			// don't move if at end point
-			if((pos_row === 1) && (pos_col === cols)) {
-				pos_row = 2;
-			}
-			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
-		}
-		else {
-			attemptMove(ball_col, ball_row - 1);
-		}
-		key_wait = true;
-		break;
-	case 39:
-		// right
-		ev.preventDefault();
-		if(maze_state === 'build') {
-			++pos_col;
-			if(pos_col > cols) {
-				pos_col = cols;
-			}
-			// make sure rows is also ready
-			if(pos_row < 1) {
-				pos_row = 1;
-			}
-			// don't move if at end point
-			if((pos_row === 1) && (pos_col === cols)) {
-				pos_col = cols - 1;
-			}
-			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
-		}
-		else {
-			attemptMove(ball_col + 1, ball_row);
-		}
-		key_wait = true;
-		break;
-	case 40:
-		// down
-		ev.preventDefault();
-		if(maze_state === 'build') {
-			++pos_row;
-			if(pos_row > rows) {
-				pos_row = rows;
-			}
-			// make sure cols is also ready
-			if(pos_col < 1) {
-				pos_col = 1;
-			}
-			// don't move if at start point
-			if((pos_row === rows) && (pos_col === 1)) {
-				pos_row = rows - 1;
-			}
-			$('#r'+pos_row.toString()+'c'+pos_col.toString()).focus();
-		}
-		else {
-			attemptMove(ball_col, ball_row + 1);		
-		}
-		key_wait = true;
-		break;
-	default:
-		// do nothing
-		break;	
-	}
-});
-
-// listener for keypresses
-$(document).keyup(function(ev) {
-	if(!allow_repeat && key_wait) {
-		key_wait = false;
-	}
-});
+}
 
 // used in the building mode when the buttons are selected
 function swapBlocks(block) {
