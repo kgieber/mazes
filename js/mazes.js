@@ -12,6 +12,8 @@ var rows = 12,
 	init_timer = false,
 	start_time = 0,
 	timer_running = false,
+	allow_repeat = false,
+	key_wait = false,
 	delay_timer;
 
 // set up sounds
@@ -54,6 +56,27 @@ $('#maze-instr-play').hide();
 $('#maze-win').removeClass('hidden');
 $('#maze-win').hide();
 $('#bt-build').prop("disabled", true);
+
+// listeners for check button control for key repeat
+$('#repeat-box').prop("checked", true);
+allow_repeat = true;
+
+$('#repeat-box').change(function() {
+	if(this.checked) {
+		allow_repeat = true;
+		key_wait = false;
+	}
+	else {
+		allow_repeat = false;	
+	}
+});	
+/*$('#grsmall').change(function() {
+	rows = 24,
+	cols =  32,
+	type = 'sm';
+	rebuildGrid();		
+});	
+*/
 
 // listeners for radio button control to switch the grid size
 /*
@@ -144,6 +167,7 @@ $('#bt-hdtimer').click(function() {
 
 // listener for keypresses
 $(document).keydown(function(ev) {
+	if(!allow_repeat && key_wait) {return;}
 	// check for the different directions
 	switch(ev.which) {
 	case 37:
@@ -167,6 +191,7 @@ $(document).keydown(function(ev) {
 		else {
 			attemptMove(ball_col - 1, ball_row);
 		}
+		key_wait = true;
 		break;
 	case 38:
 		// top
@@ -189,6 +214,7 @@ $(document).keydown(function(ev) {
 		else {
 			attemptMove(ball_col, ball_row - 1);
 		}
+		key_wait = true;
 		break;
 	case 39:
 		// right
@@ -211,6 +237,7 @@ $(document).keydown(function(ev) {
 		else {
 			attemptMove(ball_col + 1, ball_row);
 		}
+		key_wait = true;
 		break;
 	case 40:
 		// down
@@ -233,10 +260,18 @@ $(document).keydown(function(ev) {
 		else {
 			attemptMove(ball_col, ball_row + 1);		
 		}
+		key_wait = true;
 		break;
 	default:
 		// do nothing
 		break;	
+	}
+});
+
+// listener for keypresses
+$(document).keyup(function(ev) {
+	if(!allow_repeat && key_wait) {
+		key_wait = false;
 	}
 });
 
